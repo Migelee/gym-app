@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IronRank — Free Gym Progress Tracker</title>
+<meta name="description" content="Track every lift, earn strength ranks, and watch your muscle map light up. Free forever, no server, your data stays on your device.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🏋️</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div id="auth-screen" class="auth-screen hidden">
+  <div class="auth-card">
+    <div class="auth-logo">🏋️ Iron<span>Rank</span></div>
+    <p class="auth-tagline">Track every lift. Earn your rank. Light up your muscle map.<br>
+    <span class="muted">Free forever · works offline · your data never leaves this device</span></p>
+
+    <div class="auth-tabs">
+      <button id="tab-login" class="auth-tab active">Log in</button>
+      <button id="tab-register" class="auth-tab">Create account</button>
+    </div>
+
+    <form id="login-form" class="auth-form">
+      <label>Username
+        <input type="text" id="login-user" autocomplete="username" required maxlength="30">
+      </label>
+      <label>Passcode
+        <input type="password" id="login-pass" autocomplete="current-password" required>
+      </label>
+      <div id="login-error" class="form-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      <div id="known-users" class="known-users"></div>
+    </form>
+
+    <form id="register-form" class="auth-form hidden">
+      <label>Username
+        <input type="text" id="reg-user" autocomplete="username" required maxlength="30">
+      </label>
+      <label>Passcode
+        <input type="password" id="reg-pass" autocomplete="new-password" required minlength="4">
+      </label>
+      <div class="form-row">
+        <label>Bodyweight
+          <input type="number" id="reg-bw" min="25" max="400" step="0.5" value="75" required>
+        </label>
+        <label>Units
+          <select id="reg-units"><option value="kg">kg</option><option value="lb">lb</option></select>
+        </label>
+      </div>
+      <label>Strength standards
+        <select id="reg-sex">
+          <option value="m">Male standards</option>
+          <option value="f">Female standards</option>
+        </select>
+      </label>
+      <div id="reg-error" class="form-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      <p class="auth-note">Accounts live only in this browser (localStorage). Use Settings → Export to back up or move devices.</p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="app hidden">
+  <header class="topbar">
+    <div class="topbar-logo">🏋️ Iron<span>Rank</span></div>
+    <div class="topbar-right">
+      <span id="topbar-rank" class="rank-badge"></span>
+      <span id="topbar-user" class="topbar-user"></span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <button class="nav-btn active" data-view="dashboard">📊 Dashboard</button>
+    <button class="nav-btn" data-view="workout">➕ Workout</button>
+    <button class="nav-btn" data-view="exercises">📚 Exercises</button>
+    <button class="nav-btn" data-view="bodymap">🧍 Body Map</button>
+    <button class="nav-btn" data-view="ranks">🏆 Ranks</button>
+    <button class="nav-btn" data-view="history">🗓 History</button>
+    <button class="nav-btn" data-view="settings">⚙️ Settings</button>
+  </nav>
+
+  <main id="main" class="main"></main>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div id="modal-backdrop" class="modal-backdrop hidden">
+  <div id="modal" class="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/data/exercises.js"></script>
+<script src="js/data/standards.js"></script>
+<script src="js/store.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/silhouette.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
