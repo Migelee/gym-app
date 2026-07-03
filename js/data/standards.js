@@ -11,15 +11,17 @@
    of published strength-standard tables.
    ============================================================ */
 
-/* Rank tier colors: ordinal blue ramp validated for the dark
-   surface (#1a1a19) — light end 2.15:1, monotone lightness. */
+/* Rank tier colors: ordered multi-hue ramp (indigo -> teal ->
+   green -> lime -> gold) so each tier is clearly distinguishable.
+   Validated on the dark surface: adjacent CVD dE >= 11.7, all
+   steps >= 3:1 contrast; tiers always carry a text label too. */
 const RANKS = [
-  { key: 'unranked',     name: 'Unranked',     color: '#52514e' },
-  { key: 'beginner',     name: 'Beginner',     color: '#184f95' },
-  { key: 'novice',       name: 'Novice',       color: '#256abf' },
-  { key: 'intermediate', name: 'Intermediate', color: '#3987e5' },
-  { key: 'advanced',     name: 'Advanced',     color: '#86b6ef' },
-  { key: 'elite',        name: 'Elite',        color: '#cde2fb' }
+  { key: 'unranked',     name: 'Unranked',     color: '#7a7973' },
+  { key: 'beginner',     name: 'Beginner',     color: '#5c64c9' },
+  { key: 'novice',       name: 'Novice',       color: '#1e8cb0' },
+  { key: 'intermediate', name: 'Intermediate', color: '#18a86b' },
+  { key: 'advanced',     name: 'Advanced',     color: '#66c73b' },
+  { key: 'elite',        name: 'Elite',        color: '#ffd60a' }
 ];
 
 const LOWER_BODY = new Set(['quads','hamstrings','glutes','calves','adductors']);
@@ -27,25 +29,28 @@ const LOWER_BODY = new Set(['quads','hamstrings','glutes','calves','adductors'])
 /* Muscle level tiers for the body map (XP thresholds).
    XP: 10 per hard set on a primary muscle, 5 on a secondary.
    ~12 productive sets/week => ~1 level per 6-10 weeks early on. */
+/* Body-map level colors: same ordered multi-hue ramp as the ranks
+   (indigo -> teal -> green -> lime -> yellow -> gold) so each level
+   is visibly different; shades blend continuously between levels. */
 const MUSCLE_LEVELS = [
   { xp: 0,    name: 'Untrained', color: '#2c2c2a' },
-  { xp: 150,  name: 'Level 1',   color: '#184f95' },
-  { xp: 600,  name: 'Level 2',   color: '#256abf' },
-  { xp: 1500, name: 'Level 3',   color: '#3987e5' },
-  { xp: 3200, name: 'Level 4',   color: '#6da7ec' },
-  { xp: 6000, name: 'Level 5',   color: '#9ec5f4' },
-  { xp: 10000,name: 'Level 6',   color: '#cde2fb' }
+  { xp: 150,  name: 'Level 1',   color: '#4a4da0' },
+  { xp: 600,  name: 'Level 2',   color: '#1e8cb0' },
+  { xp: 1500, name: 'Level 3',   color: '#18a86b' },
+  { xp: 3200, name: 'Level 4',   color: '#66c73b' },
+  { xp: 6000, name: 'Level 5',   color: '#c9cf1d' },
+  { xp: 10000,name: 'Level 6',   color: '#ffdf0f' }
 ];
 
 /* 30-day heat tiers for the body map (sets in last 30 days,
    primary = 1 set, secondary = 0.5). */
 const HEAT_LEVELS = [
   { sets: 0,  name: 'Not trained', color: '#2c2c2a' },
-  { sets: 1,  name: 'Light',       color: '#184f95' },
-  { sets: 12, name: 'Moderate',    color: '#256abf' },
-  { sets: 24, name: 'Solid',       color: '#3987e5' },
-  { sets: 40, name: 'High',        color: '#86b6ef' },
-  { sets: 60, name: 'Very high',   color: '#cde2fb' }
+  { sets: 1,  name: 'Light',       color: '#4a4da0' },
+  { sets: 12, name: 'Moderate',    color: '#1e8cb0' },
+  { sets: 24, name: 'Solid',       color: '#18a86b' },
+  { sets: 40, name: 'High',        color: '#66c73b' },
+  { sets: 60, name: 'Very high',   color: '#ffdf0f' }
 ];
 
 /* Estimated 1RM — Epley formula, reps capped at 15 where the

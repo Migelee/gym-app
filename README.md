@@ -53,7 +53,10 @@ to see the ranks, charts and body map in action.
   Elite = 2.0× bodyweight for men). Female thresholds are scaled
   (×0.78 lower body, ×0.65 upper body, ×0.6 reps/time).
 - **Muscle XP:** each logged set gives 10 XP to the exercise's primary muscles
-  and 5 XP to secondaries; levels at 150 / 600 / 1500 / 3200 / 6000 / 10000 XP.
+  and 5 XP to secondaries, scaled by an intensity multiplier (0.5×–3.5×) based
+  on how the set measures against the exercise's strength standards — heavy,
+  hard sets level muscles far faster than easy ones. Levels at
+  150 / 600 / 1500 / 3200 / 6000 / 10000 XP.
 
 ## Privacy
 

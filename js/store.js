@@ -184,8 +184,20 @@ const Store = (() => {
     return scores;
   }
 
+  /* XP intensity multiplier for one set: harder and heavier sets
+     earn more XP. Scales with the set's score against the exercise's
+     strength standards — an easy set gives ~0.5x, hitting the
+     Beginner standard ~1x, Intermediate ~2x, Elite ~3x, capped 3.5x.
+     Exercises without standards earn the flat 1x. */
+  function setXpMult(ex, s) {
+    const ev = evaluateExercise(ex, performanceOfSet(ex, s), profile().bodyweight, profile().sex);
+    if (!ev) return 1;
+    return Math.min(3.5, Math.max(0.5, 0.5 + 2.5 * Math.min(ev.score, 1.2)));
+  }
+
   /* Muscle XP (all time) and 30-day heat sets.
-     XP: 10/set primary, 5/set secondary. Cardio: 1 XP per 2 min. */
+     XP: 10 x intensity per primary set, 5 x intensity per secondary.
+     Cardio: 1 XP per 2 min. Heat counts real sets, unweighted. */
   function muscleStats() {
     const xp = {}, heat = {}, last = {};
     for (const m of Object.keys(MUSCLES)) { xp[m] = 0; heat[m] = 0; last[m] = null; }
@@ -195,19 +207,22 @@ const Store = (() => {
       for (const en of w.entries) {
         const ex = EXERCISES_BY_ID[en.exId];
         if (!ex) continue;
-        let units = en.sets.length; // per-set credit
+        let units, sets;
         if (ex.type === 'c') {
           const mins = en.sets.reduce((a, s) => a + (s.mins || 0), 0);
-          units = mins / 10; // 10 cardio minutes ~ one "set" of credit
+          units = sets = mins / 10; // 10 cardio minutes ~ one "set" of credit
+        } else {
+          units = en.sets.reduce((a, s) => a + setXpMult(ex, s), 0);
+          sets = en.sets.length;
         }
         for (const m of ex.p) {
           xp[m] += 10 * units;
-          if (recent) heat[m] += units;
+          if (recent) heat[m] += sets;
           if (!last[m] || w.date > last[m]) last[m] = w.date;
         }
         for (const m of ex.s || []) {
           xp[m] += 5 * units;
-          if (recent) heat[m] += 0.5 * units;
+          if (recent) heat[m] += 0.5 * sets;
           if (!last[m] || w.date > last[m]) last[m] = w.date;
         }
       }
@@ -309,7 +324,7 @@ const Store = (() => {
     load, save, data, profile, currentUser, displayName,
     toKg, fromKg, fmtWeight,
     addWorkout, updateWorkout, deleteWorkout, workouts,
-    setsOf, bestPerformances, exerciseScores, muscleStats, weeklyTotals, weekStreak, personalRecords,
+    setsOf, bestPerformances, exerciseScores, muscleStats, setXpMult, weeklyTotals, weekStreak, personalRecords,
     exportData, importData,
     todayStr, dateOffset
   };

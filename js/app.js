@@ -325,16 +325,18 @@ function setRowEl(ex, en, s, si) {
   const perfEl = row.querySelector('.set-perf');
 
   const updatePerf = () => {
+    const kgSet = { ...s, weight: s.weight ? Store.toKg(+s.weight) : undefined };
+    const xpTag = () => ' · +' + Math.round(10 * Store.setXpMult(ex, kgSet)) + ' XP';
     if (ex.type === 'w' && s.weight && s.reps) {
-      const e1 = epley1RM(Store.toKg(+s.weight), +s.reps);
+      const e1 = epley1RM(kgSet.weight, +s.reps);
       const ev = evaluateExercise(ex, e1, Store.profile().bodyweight, Store.profile().sex);
-      perfEl.textContent = 'e1RM ' + Store.fmtWeight(e1) + (ev ? ' · ' + ev.rank.name : '');
+      perfEl.textContent = 'e1RM ' + Store.fmtWeight(e1) + (ev ? ' · ' + ev.rank.name : '') + xpTag();
     } else if (ex.type === 'bw' && s.reps) {
       const ev = evaluateExercise(ex, +s.reps, Store.profile().bodyweight, Store.profile().sex);
-      perfEl.textContent = ev ? ev.rank.name : '';
+      perfEl.textContent = (ev ? ev.rank.name : '') + xpTag();
     } else if (ex.type === 't' && s.secs) {
       const ev = evaluateExercise(ex, +s.secs, Store.profile().bodyweight, Store.profile().sex);
-      perfEl.textContent = ev ? ev.rank.name : '';
+      perfEl.textContent = (ev ? ev.rank.name : '') + xpTag();
     } else perfEl.textContent = '';
   };
   updatePerf();
@@ -672,7 +674,7 @@ function openMuscleModal(mkey) {
       <div class="stat-tile"><div class="stat-value" style="font-size:1.05rem">${last[mkey] ? fmtDate(last[mkey]) : 'Never'}</div><div class="stat-label">Last trained</div></div>
     </div>
     ${lvl.next ? `<div class="progressbar" style="margin-bottom:4px"><div style="width:${(lvl.progress * 100).toFixed(0)}%"></div></div>
-      <p class="hint" style="margin-bottom:14px">${Math.round(lvl.next.xp - xp[mkey])} XP to ${lvl.next.name} (10 XP per primary set, 5 per secondary)</p>` : ''}
+      <p class="hint" style="margin-bottom:14px">${Math.round(lvl.next.xp - xp[mkey])} XP to ${lvl.next.name} — harder and heavier sets earn more XP (up to 3.5× the base 10 per primary set, 5 per secondary)</p>` : ''}
     <div class="body"></div></div>`);
   m.querySelector('.modal-close').onclick = closeModal;
   const body = m.querySelector('.body');
