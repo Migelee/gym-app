@@ -161,8 +161,9 @@ function renderDashboard(main) {
   const colors = {}; const titles = {};
   for (const m of Object.keys(MUSCLES)) {
     const lvl = muscleLevelFor(xp[m]);
-    colors[m] = lvl.color;
-    titles[m] = `${MUSCLES[m].name}: ${lvl.name}`;
+    colors[m] = muscleColor(xp[m]);
+    titles[m] = `${MUSCLES[m].name}: ${lvl.name}` +
+      (lvl.next ? ` · ${Math.round(lvl.progress * 100)}% to ${lvl.next.name}` : ' (max)');
   }
   const mapCard = h(`<div class="card"><div class="card-title">Muscle map — training level</div>
     <div class="bodymap-figures"><div class="fig-f"></div><div class="fig-b"></div></div>
@@ -606,11 +607,12 @@ function renderBodymap(main) {
   for (const mkey of Object.keys(MUSCLES)) {
     if (bodymapMode === 'level') {
       const lvl = muscleLevelFor(xp[mkey]);
-      colors[mkey] = lvl.color;
-      titles[mkey] = `${MUSCLES[mkey].name}: ${lvl.name} (${Math.round(xp[mkey])} XP)`;
+      colors[mkey] = muscleColor(xp[mkey]);
+      titles[mkey] = `${MUSCLES[mkey].name}: ${lvl.name} (${Math.round(xp[mkey])} XP` +
+        (lvl.next ? `, ${Math.round(lvl.progress * 100)}% to ${lvl.next.name})` : ', max)');
     } else {
       const hl = heatLevelFor(heat[mkey]);
-      colors[mkey] = hl.color;
+      colors[mkey] = heatColor(heat[mkey]);
       titles[mkey] = `${MUSCLES[mkey].name}: ${Math.round(heat[mkey])} sets in 30 days (${hl.name})`;
     }
   }
@@ -620,7 +622,8 @@ function renderBodymap(main) {
   const legend = card.querySelector('.legend');
   const levels = bodymapMode === 'level' ? MUSCLE_LEVELS : HEAT_LEVELS;
   legend.innerHTML = levels.map(l =>
-    `<span class="legend-item"><span class="legend-swatch" style="background:${l.color}"></span>${l.name}</span>`).join('');
+    `<span class="legend-item"><span class="legend-swatch" style="background:${l.color}"></span>${l.name}</span>`).join('')
+    + `<span class="hint" style="flex-basis:100%">Every set shifts the shade — the full color means the ${bodymapMode === 'level' ? 'level' : 'tier'} is complete.</span>`;
 
   // muscle table (accessibility + detail: never color-alone)
   const rows = Object.keys(MUSCLES).filter(k => k !== 'cardio').map(k => {

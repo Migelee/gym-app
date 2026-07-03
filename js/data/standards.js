@@ -159,5 +159,29 @@ function muscleLevelFor(xp) {
 function heatLevelFor(sets) {
   let lvl = HEAT_LEVELS[0], idx = 0;
   HEAT_LEVELS.forEach((l, i) => { if (sets >= l.sets) { lvl = l; idx = i; } });
-  return { ...lvl, idx };
+  const next = HEAT_LEVELS[idx + 1] || null;
+  return { ...lvl, idx, next, progress: next ? (sets - lvl.sets) / (next.sets - lvl.sets) : 1 };
+}
+
+/* ---- continuous shading ----
+   The body map shades continuously: every set nudges the color
+   toward the next level, and completing the XP bar lands exactly
+   on that level's full color. */
+function hexLerp(a, b, t) {
+  t = Math.max(0, Math.min(1, t));
+  const pa = [1, 3, 5].map(i => parseInt(a.slice(i, i + 2), 16));
+  const pb = [1, 3, 5].map(i => parseInt(b.slice(i, i + 2), 16));
+  return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+
+function muscleColor(xp) {
+  const lvl = muscleLevelFor(xp);
+  if (!lvl.next) return lvl.color;
+  return hexLerp(lvl.color, lvl.next.color, lvl.progress);
+}
+
+function heatColor(sets) {
+  const lvl = heatLevelFor(sets);
+  if (!lvl.next) return lvl.color;
+  return hexLerp(lvl.color, lvl.next.color, lvl.progress);
 }
